@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1B3A30">
+<meta name="description" content="ボードゲーム会の席決めツール。全員の回答をもとに、卓の定員を守りながら相性のよい組み合わせを計算します。">
+<title>卓組みボード</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yusei+Magic&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead no-print">
+    <h1>卓組みボード</h1>
+    <p>ボードゲーム会の席決め</p>
+  </header>
+
+  <!-- ============ ホーム ============ -->
+  <section id="view-home" class="view active">
+    <div class="section">
+      <h2>どちらで使いますか</h2>
+      <div class="stack">
+        <button class="btn" onclick="startQuiz('code')">
+          <b>参加者として答える</b><br>
+          <span class="note">9つの質問に答えると、4文字のコードが出ます。それを幹事に伝えてください。</span>
+        </button>
+        <button class="btn" onclick="showView('host')">
+          <b>幹事として卓を組む</b><br>
+          <span class="note">参加者のコードを集めて、卓の割り当てを計算します。</span>
+        </button>
+      </div>
+    </div>
+    <div class="section">
+      <h2>このツールについて</h2>
+      <p class="note">
+        全員の回答が揃ってから、まとめて割り当てを計算します。先に答えた人が有利になることはありません。<br>
+        通信は使いません。電波の悪い会場でも動きます。データはこの端末の中だけに残ります。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 質問 ============ -->
+  <section id="view-quiz" class="view">
+    <div class="section">
+      <div class="progress" id="quiz-progress"></div>
+      <div class="progress-bar"><i id="quiz-bar" style="width:0%"></i></div>
+      <p class="question" id="quiz-question"></p>
+      <div class="stack" id="quiz-options"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-quiet" onclick="quizBack()">ひとつ戻る</button>
+      <button class="btn btn-quiet" onclick="quizAbort()">やめる</button>
+    </div>
+  </section>
+
+  <!-- ============ コード表示 ============ -->
+  <section id="view-code" class="view">
+    <div class="section">
+      <div class="code-card">
+        <p class="note">あなたのコード</p>
+        <p class="code-value" id="code-value"></p>
+        <p class="note">この4文字を幹事に伝えてください</p>
+        <div class="tag-list" id="code-tags"></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-quiet" onclick="startQuiz('code')">もう一度答える</button>
+      <button class="btn btn-quiet" onclick="showView('home')">最初に戻る</button>
+    </div>
+  </section>
+
+  <!-- ============ 幹事 ============ -->
+  <section id="view-host" class="view">
+
+    <div class="section">
+      <h2>参加者を追加する</h2>
+      <div class="field">
+        <input type="text" class="name" id="add-name" placeholder="名前" autocomplete="off">
+        <input type="text" class="code" id="add-code" placeholder="コード" autocomplete="off" maxlength="5" inputmode="latin">
+        <button class="btn btn-brass" style="flex:0 0 auto;width:auto;" onclick="addByCode()">追加</button>
+      </div>
+      <p class="note" id="add-msg" style="margin-top:8px;"></p>
+      <div style="margin-top:10px;">
+        <button class="btn btn-quiet" onclick="startQuiz('add')">スマホを持っていない人の代わりに答える</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>参加者 <span id="roster-count" class="note"></span></h2>
+      <div class="roster" id="roster"></div>
+    </div>
+
+    <div class="section">
+      <h2>卓の設定</h2>
+      <div class="field">
+        <label class="note" style="flex:1 1 100%;">1卓あたりの人数のめやす</label>
+        <input type="number" id="pref-size" value="4" min="2" max="8" style="flex:0 0 90px;" inputmode="numeric">
+        <button class="btn btn-quiet" style="flex:0 0 auto;width:auto;" onclick="recalcCapacities()">卓数を計算し直す</button>
+      </div>
+      <p class="note" id="cap-summary" style="margin-top:8px;"></p>
+    </div>
+
+    <div class="section">
+      <div class="btn-row">
+        <button class="btn btn-brass" onclick="runAssign()">卓を組む</button>
+        <button class="btn btn-quiet" onclick="nextRound()">次のラウンドを組む</button>
+      </div>
+      <p class="note" id="assign-msg" style="margin-top:8px;"></p>
+    </div>
+
+    <div class="section">
+      <h2 id="result-heading">卓の割り当て</h2>
+      <p class="note no-print" id="swap-hint"></p>
+      <div class="tables" id="tables"></div>
+    </div>
+
+    <div class="section no-print">
+      <div class="btn-row">
+        <button class="btn btn-quiet" onclick="copyResult()">結果をコピー</button>
+        <button class="btn btn-quiet" onclick="window.print()">卓に置く札を印刷</button>
+        <button class="btn btn-quiet" onclick="showView('home')">最初に戻る</button>
+      </div>
+      <div style="margin-top:10px;">
+        <button class="btn btn-danger" onclick="clearAll()">この端末のデータをすべて消す</button>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script src="js/model.js"></script>
+<script src="js/assign.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
