@@ -1,0 +1,230 @@
+/* ============================================================
+   卓組みボード — 見た目
+   ゲーム卓のフェルト地に、紙の席札を並べたイメージで作っています。
+   ============================================================ */
+
+:root {
+  --felt: #1B3A30;
+  --felt-deep: #12281F;
+  --felt-line: #2C5245;
+  --paper: #EFE7D5;
+  --paper-edge: #DACDB2;
+  --ink: #221F1A;
+  --ink-soft: #5E574B;
+  --brass: #A8842B;
+  --alert: #9E3B32;
+  --radius: 3px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--felt);
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 2px, transparent 2px 4px),
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.05), transparent 60%);
+  color: var(--paper);
+  font-family: 'Zen Kaku Gothic New', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  min-height: 100vh;
+  padding: 0 0 64px;
+}
+
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+/* ---- ヘッダー ---- */
+.masthead {
+  border-bottom: 1px solid var(--felt-line);
+  padding: 20px 0 16px;
+  margin-bottom: 24px;
+}
+.masthead h1 {
+  font-family: 'Yusei Magic', sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: .04em;
+}
+.masthead p { color: #9FB5AC; font-size: 13px; margin-top: 2px; }
+
+/* ---- ボタン ---- */
+.btn {
+  font-family: inherit;
+  font-size: 16px;
+  padding: 14px 18px;
+  border: 1px solid var(--paper-edge);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: transform .06s;
+}
+.btn:active { transform: translateY(1px); }
+.btn-quiet {
+  background: transparent;
+  color: #B7CCC3;
+  border-color: var(--felt-line);
+}
+.btn-brass { background: var(--brass); border-color: var(--brass); color: #1B1508; font-weight: 700; }
+.btn-danger { background: transparent; border-color: #6B3A35; color: #E0A9A3; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-row .btn { width: auto; flex: 1 1 160px; text-align: center; }
+.btn:focus-visible, input:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+/* ---- 画面 ---- */
+.view { display: none; }
+.view.active { display: block; }
+
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.section { margin-bottom: 32px; }
+.section > h2 {
+  font-family: 'Yusei Magic', sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  color: #CFE0D8;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--felt-line);
+}
+.note { font-size: 13px; color: #9FB5AC; }
+.note-warn { color: #E9B8B2; }
+
+/* ---- 質問 ---- */
+.progress { font-size: 13px; color: #9FB5AC; margin-bottom: 8px; }
+.progress-bar { height: 3px; background: var(--felt-line); border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
+.progress-bar > i { display: block; height: 100%; background: var(--brass); transition: width .2s; }
+.question {
+  font-family: 'Yusei Magic', sans-serif;
+  font-size: 21px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* ---- コード ---- */
+.code-card {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  text-align: center;
+  box-shadow: 0 6px 0 rgba(0,0,0,.18);
+}
+.code-value {
+  font-family: 'Yusei Magic', sans-serif;
+  font-size: 56px;
+  letter-spacing: .22em;
+  text-indent: .22em;
+  line-height: 1.2;
+}
+.code-card .note { color: var(--ink-soft); }
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 14px; }
+.tag {
+  font-size: 12px;
+  border: 1px solid var(--paper-edge);
+  border-radius: 999px;
+  padding: 3px 10px;
+  color: var(--ink-soft);
+}
+
+/* ---- 入力 ---- */
+.field { display: flex; gap: 8px; flex-wrap: wrap; }
+input[type="text"], input[type="number"] {
+  font-family: inherit;
+  font-size: 16px;
+  padding: 12px;
+  border: 1px solid var(--felt-line);
+  border-radius: var(--radius);
+  background: var(--felt-deep);
+  color: var(--paper);
+  min-width: 0;
+}
+input::placeholder { color: #6E8880; }
+.field .name { flex: 2 1 140px; }
+.field .code { flex: 1 1 96px; text-transform: uppercase; letter-spacing: .18em; }
+
+/* ---- 参加者リスト ---- */
+.roster { display: flex; flex-direction: column; gap: 4px; }
+.roster-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px;
+  border: 1px solid var(--felt-line);
+  border-radius: var(--radius);
+  font-size: 15px;
+}
+.roster-row .who { flex: 1; min-width: 0; }
+.roster-row .who b { font-weight: 500; }
+.roster-row .meta { display: block; font-size: 12px; color: #92A9A0; }
+.icon-btn {
+  background: none; border: none; color: #92A9A0;
+  font-size: 16px; cursor: pointer; padding: 4px 8px; border-radius: var(--radius);
+}
+.icon-btn:hover { color: var(--paper); }
+
+/* ---- 卓カード ---- */
+.tables { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 14px; }
+.table-card {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 5px 0 rgba(0,0,0,.18);
+  display: flex;
+  flex-direction: column;
+}
+.table-head {
+  padding: 10px 12px;
+  color: #fff;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.table-head .label { font-family: 'Yusei Magic', sans-serif; font-size: 20px; }
+.table-head .count { font-size: 13px; opacity: .9; }
+.table-body { padding: 10px 12px 12px; flex: 1; }
+
+.seat {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+.seat:hover { background: rgba(0,0,0,.05); }
+.seat.selected { border-color: var(--brass); background: rgba(168,132,43,.16); }
+.seat .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.seat .role { font-size: 11px; color: var(--ink-soft); }
+.seat.empty { color: #A69C89; font-style: italic; }
+
+.table-note {
+  font-size: 12px;
+  color: var(--ink-soft);
+  border-top: 1px dashed var(--paper-edge);
+  margin-top: 8px;
+  padding-top: 8px;
+  line-height: 1.6;
+}
+.table-warn { color: var(--alert); font-size: 12px; margin-top: 6px; line-height: 1.6; }
+
+/* ---- 印刷: 卓に置く札 ---- */
+@media print {
+  body { background: #fff; color: #000; padding: 0; }
+  .no-print { display: none !important; }
+  .tables { display: block; }
+  .table-card { box-shadow: none; border: 2px solid #000; page-break-after: always; margin: 0; }
+  .table-head { color: #000 !important; background: none !important; border-bottom: 2px solid #000; }
+  .table-head .label { font-size: 44px; }
+  .seat { font-size: 24px; }
+  .table-note, .table-warn { font-size: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
